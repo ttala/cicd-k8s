@@ -16,7 +16,7 @@ jobs:
              echo ${HOME}/.kube/config
        - name: Setup context
          run: |
-             alias k=kubectl
+             alias kubectl=k
              k config use-context cicd-sa-ctx
        - name: Check node / pods
          run: |
