@@ -1,0 +1,24 @@
+name: App deployment on kubernetes
+'on': push
+jobs:
+   job1:
+     name: Init kube cluster
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout repository
+         uses: actions/checkout@v4
+       - name: Install kubectl
+         uses: azure/setup-kubectl@v3
+       - name: Setup kubeconfig
+         run: |
+             mkdir ${HOME}/.kube
+             echo ${{secrets.KUBECONFIG_CICD}} | base64 -d > ${HOME}/.kube/config
+             echo ${HOME}/.kube/config
+       - name: Setup context
+         run: |
+             alias k=kubectl
+             k config use-context cicd-sa-ctx
+       - name: Check node / pods
+         run: |
+             k get node
+             k get pod
