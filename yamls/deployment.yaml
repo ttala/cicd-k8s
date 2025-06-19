@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: myweather
+  name: myweather
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myweather
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: myweather
+    spec:
+      containers:
+      - image: 
+        name: myweather
