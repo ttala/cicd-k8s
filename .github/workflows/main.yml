@@ -51,6 +51,6 @@ jobs:
 
        - name: Deploy app to kubernetes
          run: |
-                 sed "s|MY_IMAGE|${IMAGE_NAME}|g" k8s/deployment.yaml
+                 sed "s|MY_IMAGE|${IMAGE_NAME}|g" yamls/deployment.yaml
                  kubectl apply -f yamls/deployment
                  kubectl apply -f yamls/svc.yaml
