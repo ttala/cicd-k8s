@@ -8,7 +8,7 @@ jobs:
     name: Build image and push to Dockerhub
 
     outputs:
-      image_name: ${{ steps.set-image-name.outputs.IMAGE_NAME }}
+      image_name: ${{ steps.set-image-name.outputs.image_name }}
 
     steps:
       - name: Checkout code
@@ -26,11 +26,10 @@ jobs:
       - name: Build and push Docker image
         id: set-image-name
         run: |
-          IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/myweather:latest
-          echo "IMAGE_NAME=$IMAGE_NAME"
-          docker build -t $IMAGE_NAME .
-          docker push $IMAGE_NAME
-          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_OUTPUT
+          I_NAME=${{ secrets.DOCKERHUB_USERNAME }}/myweather:latest
+          docker build -t $I_NAME .
+          docker push $I_NAME
+          echo "IMAGE_NAME=$I_NAME" >> $GITHUB_OUTPUT
 
   deploy:
     name: Deploy app
@@ -59,7 +58,7 @@ jobs:
 
       - name: Deploy app to Kubernetes
         env:
-          IMAGE_NAME: ${{ needs.build.outputs.IMAGE_NAME }}
+          IMAGE_NAME: ${{ needs.build.outputs.image_name }}
         run: |
           echo "Image name: ${IMAGE_NAME}"
           sed -i "s|MY_IMAGE|${IMAGE_NAME}|" yamls/deployment.yaml
