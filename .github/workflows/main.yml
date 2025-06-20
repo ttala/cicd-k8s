@@ -58,12 +58,6 @@ jobs:
           kubectl get nodes
           kubectl get pods
 
-      - name: Load IMAGE_NAME from build
-        env:
-           IMAGE_NAME: ${{ env.IMAGE_NAME }}
-        run: |
-            echo "Using image: $IMAGE_NAME"
-
       - name: Deploy app to Kubernetes
         run: |
           echo "Image name: ${IMAGE_NAME}"
