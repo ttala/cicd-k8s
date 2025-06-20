@@ -42,9 +42,6 @@ jobs:
         run: |
            echo "Image name : $IMAGE_NAME"
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
 
@@ -63,7 +60,7 @@ jobs:
 
       - name: Deploy app to Kubernetes
         run: |
-          echo "Image name: ${IMAGE_NAME}"
-          sed -i "s|MY_IMAGE|$IMAGE_NAME|" yamls/deployment.yaml
+          echo "Image name: ${{ needs.build.outputs.image-name }}"
+          sed -i "s|MY_IMAGE|${{ needs.build.outputs.image-name }}|" yamls/deployment.yaml
           kubectl apply -f yamls/deployment.yaml
           kubectl apply -f yamls/svc.yaml
