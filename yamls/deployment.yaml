@@ -16,5 +16,5 @@ spec:
         app: myweather
     spec:
       containers:
-      - image: 
+      - image: MY_IMAGE
         name: myweather

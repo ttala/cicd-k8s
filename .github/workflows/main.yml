@@ -3,7 +3,7 @@ name: App deployment on kubernetes
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build image and push
+    name: Build image and push to Dockerhub
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -18,28 +18,39 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ttyeri/myweather:V1
+        env:
+          IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/myweather:latest
+        run: |
+            docker build -t $IMAGE_NAME .
+            docker push $IMAGE_NAME
+            echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
   deploy:
-     name: Init kube cluster
+     name: Deploy app
      runs-on: ubuntu-latest
      steps:
        - name: Checkout repository
          uses: actions/checkout@v4
+
        - name: Install kubectl
          uses: azure/setup-kubectl@v3
+
        - name: Setup kubeconfig
          run: |
              mkdir ${HOME}/.kube
              echo ${{secrets.KUBECONFIG_CICD}} | base64 -d > ${HOME}/.kube/config
              echo ${HOME}/.kube/config
+
        - name: Setup context
          run: |
              kubectl config use-context cicd-sa-ctx
-       - name: Check node / pods
+
+       - name: Check nodes
          run: |
              kubectl get node
              kubectl get pod
+
+       - name: Deploy app to kubernetes
+         run: |
+                 sed "s|MY_IMAGE|${IMAGE_NAME}|g" k8s/deployment.yaml
+                 kubectl apply -f yamls/deployment
+                 kubectl apply -f yamls/svc.yaml
