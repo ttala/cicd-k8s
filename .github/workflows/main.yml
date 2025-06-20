@@ -35,10 +35,13 @@ jobs:
     name: Deploy app
     runs-on: ubuntu-latest
     needs: [build]
-    env:
-      IMAGE_NAME: ${{ needs.build.outputs.image-name }}
 
     steps:
+      - env:
+          IMAGE_NAME: ${{ needs.build.outputs.image-name }}
+        run: |
+           echo "Image name : $IMAGE_NAME"
+           
       - name: Checkout repository
         uses: actions/checkout@v4
 
