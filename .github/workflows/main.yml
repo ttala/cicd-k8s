@@ -37,7 +37,9 @@ jobs:
     needs: [build]
 
     steps:
-
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
 
@@ -58,6 +60,6 @@ jobs:
         run: |
           IMAGE_NAME=$DOCKER_USER/myweather:latest
           echo "Image name: ${IMAGE_NAME}"
-          sed -i "s|MY_IMAGE|${IMAGE_NAME}|" yamls/deployment.yaml
+          sed -i.bak "s|MY_IMAGE|${IMAGE_NAME}|" yamls/deployment.yaml
           kubectl apply -f yamls/deployment.yaml
           kubectl apply -f yamls/svc.yaml
