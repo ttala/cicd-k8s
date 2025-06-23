@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
 
@@ -55,6 +55,13 @@ jobs:
         run: |
           kubectl get nodes
           kubectl get pods
+
+      - name: Create K8s Secret
+        run: |
+            kubectl create secret generic api-secret \
+              --from-literal=apiKey=${{ secrets.API_KEY }} \
+              --dry-run=client -o yaml | kubectl apply -f -
+                
 
       - name: Deploy app to Kubernetes
         run: |
