@@ -48,8 +48,8 @@ jobs:
           mkdir -p ${HOME}/.kube
           echo "${{ secrets.KUBECONFIG_CICD }}" | base64 -d > ${HOME}/.kube/config
 
-      #- name: Setup context
-       # run: kubectl config use-context cicd-sa-ctx
+      - name: Setup context
+        run: kubectl config use-context gateway
 
       - name: Check nodes
         run: |
